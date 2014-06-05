@@ -73,6 +73,18 @@ public class Processor : MonoBehaviour
 	//Right double mode
 	Mode rightDoubleMode = Mode.None;
 	
+	//Left single CycloShake direction
+	Vector3 leftSingleDireciton = new Vector3 ();
+	
+	//Right single CycloShake direction
+	Vector3 rightSingleDirection = new Vector3 ();
+	//Left double CycloShake direction
+	
+	Vector3 leftDoubleDirection = new Vector3 ();
+	
+	//Right double CycloShake direciton
+	Vector3 rightDoubleDirection = new Vector3 ();
+	
 	//Threshold distance between index and middle
 	const float indexMiddleThreshold = 20;
 	
@@ -125,23 +137,16 @@ public class Processor : MonoBehaviour
 		rightDoubleRenderer.SetColors (Color.white, Color.white);
 	}
 	
+	
 	// Update is called once per frame
 	void Update ()
 	{
 		//Update stroke
 		UpdateStroke ();
 		
-//		if (leftSingleStroke.getStrokePoints ().Count != 0)
-//			SegmentStroke (ref leftSingleStroke, ref leftSingleStrokeList);
-//		if (rightSingleStroke.getStrokePoints ().Count != 0)
-//			SegmentStroke (ref rightSingleStroke, ref rightSingleStrokeList);
-//		if (leftDoubleStroke.getStrokePoints ().Count != 0)
-//			SegmentStroke (ref leftDoubleStroke, ref leftDoubleStrokeList);
-//		if (rightDoubleStroke.getStrokePoints ().Count != 0)
-//			SegmentStroke (ref rightDoubleStroke, ref rightDoubleStrokeList);
 		
 //		CheckMode(ref leftSingleStroke,ref leftSingleStrokeList,ref leftSingleMode);
-		CheckMode(ref rightSingleStroke,ref rightSingleStrokeList,ref rightSingleMode);
+		CheckMode (ref rightSingleStroke, ref rightSingleStrokeList, ref rightSingleMode);
 //		CheckMode(ref leftDoubleStroke,ref leftDoubleStrokeList,ref leftDoubleMode);
 //		CheckMode(ref rightDoubleStroke,ref rightDoubleStrokeList,ref rightDoubleMode);
 		
@@ -387,15 +392,24 @@ public class Processor : MonoBehaviour
 		float distance = Vector3.Distance (startPoint, endPoint);			
 		float averageSpeed = distance / (lastStroke.getEndTime () - lastStroke.getStartTime ());
 		
+//		float speed1=lastStroke.getStrokeSpeeds()[lastStroke.getStrokeSpeeds().Count-1];
+		
 		//Fit the stroke to a line
 		Vector3 lineDirection = new Vector3 ();
 		float fitLineCost = 0;
 		lastStroke.fitLine (lastStroke.getStrokePoints (), out lineDirection, out fitLineCost);
 		
-//		Debug.Log(fitLineCost);
-		if(fitLineCost>50||distance>150)
-		{
-			Debug.Log("Cost "+fitLineCost+" distance "+distance);
+
+////		Debug.Log(fitLineCost);
+//		if (fitLineCost > 50 || distance > 150) {
+//			Debug.Log ("Cost " + fitLineCost + " distance " + distance);
+//		}
+//		
+		if (fitLineCost < 50 && distance < 150) {
+			if (averageSpeed > 50) {
+				mode = Mode.CycloShake;
+			}
 		}
+			
 	}
 }
